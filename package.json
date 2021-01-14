@@ -1,0 +1,30 @@
+{
+  "name": "cauldron",
+  "version": "1.0.0",
+  "description": "A simple CAP project.",
+  "repository": "<Add your repository here>",
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "@sap/cds": "^4",
+    "express": "^4",
+    "@sap/hana-client": "^2.4.177"
+  },
+  "devDependencies": {
+    "concurrently": "^5.3.0",
+    "sqlite3": "^5"
+  },
+  "scripts": {
+    "start": "npx cds run",
+    "dev:server": "cds watch",
+    "dev:web": "npm start --prefix app/storefront",
+    "dev": "concurrently npm:dev:*"
+  },
+  "cds": {
+    "requires": {
+      "db": {
+        "kind": "sql"
+      }
+    }
+  }
+}

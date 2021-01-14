@@ -1,0 +1,12 @@
+## Get books
+GET http://localhost:4004/catalog/Books
+
+### Make an order
+POST http://localhost:4004/catalog/Orders 
+Content-Type: application/json
+
+{
+    "OrderNo": "2021-01....", "Items": [
+        {"book_ID": 1, "amount": 50}
+    ]
+}
