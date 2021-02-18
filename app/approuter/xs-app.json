@@ -1,0 +1,16 @@
+{
+    "welcomeFile": "/index.html",
+    "authenticationMethod": "none",
+    "routes": [
+        {
+            "source": "/api",
+            "target": "catalog/Books",
+            "destination": "srv-api"
+        },
+        {
+            "source": "^/(.*)",
+            "target": "$1",
+            "localDir": "webapp"
+        }
+    ]
+}

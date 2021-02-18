@@ -1,0 +1,71 @@
+## Generated mta.yaml based on template version 0.4.0
+## appName = cauldron
+## language=nodejs; multiTenant=false
+## approuter=
+_schema-version: '3.1'
+ID: cauldron
+version: 1.0.0
+description: "A simple CAP project."
+parameters:
+  enable-parallel-deployments: true
+   
+build-parameters:
+  before-all:
+   - builder: custom
+     commands:
+      - npm install --production
+      - npx -p @sap/cds-dk cds build --production
+
+modules:
+ # --------------------- SERVER MODULE ------------------------
+ - name: cauldron-srv
+ # ------------------------------------------------------------
+   type: nodejs
+   path: gen/srv
+   requires:
+    # Resources extracted from CAP configuration
+    - name: cauldron-db
+   provides:
+    - name: srv-api      # required by consumers of CAP services (e.g. approuter)
+      properties:
+        url: ${default-url}
+# --------------------- SERVER MODULE ------------------------
+ - name: cauldron-approuter
+ # ------------------------------------------------------------
+   type: nodejs
+   path: app/approuter
+   requires:
+    # Resources extracted from CAP configuration
+    - name: srv-api 
+      group: destinations
+      properties:
+        name: srv-api
+        url: ~{url}
+   build-parameters:
+     ignore: ["node_modules"]
+
+ # -------------------- SIDECAR MODULE ------------------------
+ - name: cauldron-db-deployer
+ # ------------------------------------------------------------
+   type: hdb
+   path: gen/db  
+   parameters:
+     buildpack: nodejs_buildpack
+   requires:
+    # 'hana' and 'xsuaa' resources extracted from CAP configuration
+    - name: cauldron-db
+
+
+resources:
+ # services extracted from CAP configuration
+ # 'service-plan' can be configured via 'cds.requires.<name>.vcap.plan'
+# ------------------------------------------------------------
+ - name: cauldron-db
+# ------------------------------------------------------------
+   type: com.sap.xs.hdi-container
+   parameters:
+     service: hanatrial  # or 'hanatrial' on trial landscapes
+     service-plan: hdi-shared
+   properties:
+     hdi-service-name: ${service-name}
+
